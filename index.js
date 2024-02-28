@@ -2,6 +2,7 @@
  * Компонент отображения формы ввода личных данных в создании/редактировании агента
  * from: ProfileInfo
  */
+import { React, useEffect } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 
@@ -45,7 +46,7 @@ export const ProfileInfo = (props) => {
     whatsAppSetNotifications,
   } = props;
 
-  const showError = (internalErrors, errorsServer) => {
+  useEffect(() => {
     if (!errorsServer && !errorsServer.isArray()) return null;
 
     errorsServer.forEach((elem) => {
@@ -57,7 +58,7 @@ export const ProfileInfo = (props) => {
         internalErrors.email = elem.message;
       }
     });
-  };
+  }, [internalErrors, errorsServer]);
 
   const setIsJuridical = (value) => {
     if (permissions.editJuridical) {
@@ -68,8 +69,6 @@ export const ProfileInfo = (props) => {
       либо написать на почту docs@rosstrah.ru, в теме письма указав свой логин`);
     }
   };
-
-  showError(internalErrors, errorsServer);
 
   if (loading) return (
     <EmptyNoBorder>
