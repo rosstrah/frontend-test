@@ -59,14 +59,6 @@ export const ProfileInfo = (props) => {
     });
   };
 
-  if (loading) {
-    return (
-      <EmptyNoBorder>
-        <Spinner />
-      </EmptyNoBorder>
-    );
-  }
-
   const setIsJuridical = (value) => {
     if (permissions.editJuridical) {
       setValue(["userInfo", "isJuridical"], value);
@@ -78,6 +70,12 @@ export const ProfileInfo = (props) => {
   };
 
   showError(internalErrors, errorsServer);
+
+  if (loading) return (
+    <EmptyNoBorder>
+      <Spinner />
+    </EmptyNoBorder>
+  );
 
   return (
     <>
