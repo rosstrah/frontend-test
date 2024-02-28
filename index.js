@@ -23,6 +23,7 @@ import {
   Range,
 } from "../../UiComponents";
 import { generatePassword } from "./utils";
+import { MAGIC_STRINGS, LOCALES, REGEXP, DATES_FORMAT } from "./const";
 
 export const ProfileInfo = (props) => {
   const {
@@ -51,10 +52,10 @@ export const ProfileInfo = (props) => {
 
     errorsServer.forEach((elem) => {
       internalErrors[elem.key] = elem.message;
-      if (elem.key === "usernameCanonical") {
+      if (elem.key === MAGIC_STRINGS.usernameCanonical) {
         internalErrors.username = elem.message;
       }
-      if (elem.key === "emailCanonical") {
+      if (elem.key === MAGIC_STRINGS.emailCanonical) {
         internalErrors.email = elem.message;
       }
     });
@@ -62,11 +63,9 @@ export const ProfileInfo = (props) => {
 
   const setIsJuridical = (value) => {
     if (permissions.editJuridical) {
-      setValue(["userInfo", "isJuridical"], value);
+      setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.isJuridical], value);
     } else {
-      rejectSet(`Если вы хотите работать как юридическое лицо, то необходимо заключить с нами договор. Для этого вам нужно обратиться в тех. поддержку по телефону
-      +7 (800) 550-50-43,
-      либо написать на почту docs@rosstrah.ru, в теме письма указав свой логин`);
+      rejectSet(LOCALES.juridicalError);
     }
   };
 
@@ -80,44 +79,44 @@ export const ProfileInfo = (props) => {
     <>
       <FormRow>
         <Input
-          id="username"
-          label="Логин"
+          id={MAGIC_STRINGS.username}
+          label={LOCALES.login}
           disabled={!permissions.editUsername}
           autoComplete="off"
           value={userInfo.username}
-          onChange={(value) => setValue(["userInfo", "username"], value)}
+          onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.username], value)}
           onBlur={(value) => {
-            validate("username", value);
+            validate(MAGIC_STRINGS.username, value);
           }}
           error={
             internalErrors.username ||
             errorsServer.find((el) =>
-              ["username", "usernameCanonical"].includes(el.key)
+              [MAGIC_STRINGS.username, MAGIC_STRINGS.usernameCanonical].includes(el.key)
             )
           }
         />
 
         {permissions.editPassword && (
           <Input
-            id="password"
-            error={
-              internalErrors.password ||
-              errorsServer.find((el) => el.key === "password")
-            }
-            label="Пароль"
+            id={MAGIC_STRINGS.password}
+            label={LOCALES.password}
             value={userInfo.password}
             autoComplete="off"
-            onChange={(value) => setValue(["userInfo", "password"], value)}
+            onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.password], value)}
             onBlur={(value) => {
-              if (newUser) validate("password", value);
+              if (newUser) validate(MAGIC_STRINGS.password, value);
             }}
+            error={
+              internalErrors.password ||
+              errorsServer.find((el) => el.key === MAGIC_STRINGS.password)
+            }
             after={
               <Button
-                type="text"
-                tooltip="сгенерировать"
+                type={MAGIC_STRINGS.text}
+                tooltip={LOCALES.generate}
                 onClick={(e) => {
                   e.preventDefault();
-                  setValue(["userInfo", "password"], generatePassword());
+                  setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.password], generatePassword());
                 }}
               >
                 <DicesIcon />
@@ -126,144 +125,144 @@ export const ProfileInfo = (props) => {
           />
         )}
         <Input
-          id="surname"
-          error={internalErrors.surname}
-          label="Фамилия"
-          placeholder="Иванов"
+          id={MAGIC_STRINGS.surname}
+          label={LOCALES.surname}
+          placeholder={LOCALES.surnameDefault}
           disabled={!permissions.editFIO}
           value={userInfo.surname}
-          onChange={(value) => setValue(["userInfo", "surname"], value)}
+          onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.surname], value)}
           onBlur={(value) => {
-            validate("surname", value);
+            validate(MAGIC_STRINGS.surname, value);
           }}
+          error={internalErrors.surname}
         />
         <Input
-          id="firstname"
-          error={internalErrors.firstname}
-          placeholder="Иван"
-          label="Имя"
+          id={MAGIC_STRINGS.firstname}
+          label={LOCALES.name}
+          placeholder={LOCALES.nameDefault}
           disabled={!permissions.editFIO}
           value={userInfo.firstname}
-          onChange={(value) => setValue(["userInfo", "firstname"], value)}
+          onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.firstname], value)}
           onBlur={(value) => {
-            validate("firstname", value);
+            validate(MAGIC_STRINGS.firstname, value);
           }}
+          error={internalErrors.firstname}
         />
         <Input
-          id="patronymic"
-          placeholder="Иванович"
-          label="Отчество"
+          id={MAGIC_STRINGS.patronymic}
+          label={LOCALES.patronymic}
+          placeholder={LOCALES.patronymicDefault}
           disabled={!permissions.editFIO}
           value={userInfo.patronymic}
-          onChange={(value) => setValue(["userInfo", "patronymic"], value)}
+          onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.patronymic], value)}
         />
       </FormRow>
       <FormRow>
         <RadioButtons
-          id="isJuridical"
+          id={MAGIC_STRINGS.isJuridical}
           value={isJuridical}
-          onChange={(value) => setIsJuridical(value)}
           list={[
-            { title: "Физическое лицо", value: false },
-            { title: "Юридическое лицо", value: true },
+            { title: LOCALES.physical, value: false },
+            { title: LOCALES.juridical, value: true },
           ]}
+          onChange={(value) => setIsJuridical(value)}
         />
         {isJuridical ? (
           <Input
+            id={MAGIC_STRINGS.inn}
+            label={LOCALES.inn}
             maxLength="12"
-            id="inn"
-            label="ИНН"
             value={userInfo.inn}
             onChange={(value) => {
               if (
-                /^[\d]{0,12}$/.test(value) ||
+                REGEXP.inn.test(value) ||
                 value.length < userInfo.inn.length
               )
-                return setValue(["userInfo", "inn"], value);
+                return setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.inn], value);
             }}
           />
         ) : (
           <>
             <Input
-              placeholder="9999"
-              label="Серия паспорта"
+              id={MAGIC_STRINGS.series}
+              label={LOCALES.passportSerial}
+              placeholder={LOCALES.passportSerialDefault}
               maxLength="4"
-              error={internalErrors.series}
-              id="series"
               size="xs"
               value={userInfo.series}
               onChange={(value) => {
                 if (
-                  /^[\d]{0,4}$/.test(value) ||
+                  REGEXP.passportSerial.test(value) ||
                   value.length < userInfo.series.length
                 )
-                  return setValue(["userInfo", "series"], value);
+                  return setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.series], value);
               }}
               onBlur={(value) => {
-                validate("series", value, {
-                  documentType: "passport",
+                validate(MAGIC_STRINGS.series, value, {
+                  documentType: MAGIC_STRINGS.passport,
                 });
               }}
+              error={internalErrors.series}
             />
             <Input
-              placeholder="123456"
-              label="Номер паспорта"
+              id={MAGIC_STRINGS.number}
+              label={LOCALES.passportNumber}
+              placeholder={LOCALES.passportNumberDefault}
               maxLength="6"
               size="xs"
-              error={internalErrors.number}
-              id="number"
               value={userInfo.number}
               onChange={(value) => {
                 if (
-                  /^[\d]{0,6}$/.test(value) ||
+                  REGEXP.passportNumber.test(value) ||
                   value.length < userInfo.number.length
                 )
-                  return setValue(["userInfo", "number"], value);
+                  return setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.number], value);
               }}
               onBlur={(value) => {
-                validate("number", value, {
-                  documentType: "passport",
+                validate(MAGIC_STRINGS.number, value, {
+                  documentType: MAGIC_STRINGS.passport,
                 });
               }}
+              error={internalErrors.number}
             />
             <DateInput
-              label="Дата рождения"
-              error={internalErrors.birthday}
-              id="birthday"
+              id={MAGIC_STRINGS.birthday}
+              label={LOCALES.birthday}
               value={userInfo.birthday}
               onChange={(value) => {
                 if (
-                  /^[.\d]{0,10}$/.test(value) ||
+                  REGEXP.birthday.test(value) ||
                   value.length < userInfo.birthday.length
                 )
-                  return setValue(["userInfo", "birthday"], value);
+                  return setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.birthday], value);
               }}
               onBlur={(value) => {
-                validate("birthday", value);
+                validate(MAGIC_STRINGS.birthday, value);
                 if (userInfo.issuedAt)
-                  validate("issuedAt", userInfo.issuedAt, {
-                    documentType: "passport",
+                  validate(MAGIC_STRINGS.issuedAt, userInfo.issuedAt, {
+                    documentType: MAGIC_STRINGS.passport,
                     birth: value,
                   });
-                if (moment(value, "DD.MM.YYYY").isValid()) {
+                if (moment(value, DATES_FORMAT.DDMMYYYY).isValid()) {
                   setValue(
-                    ["userInfo", "birthday"],
-                    moment(value, "DD.MM.YYYY").format("DD.MM.YYYY")
+                    [MAGIC_STRINGS.userInfo, MAGIC_STRINGS.birthday],
+                    moment(value, DATES_FORMAT.DDMMYYYY).format(DATES_FORMAT.DDMMYYYY)
                   );
                 }
               }}
+              error={internalErrors.birthday}
             />
             <Input
-              label="СНИЛС"
+              id={MAGIC_STRINGS.snils}
+              label={LOCALES.snils}
               maxLength="11"
-              id="snils"
               value={userInfo.snils}
               onChange={(value) => {
                 if (
-                  /^[\d]{0,11}$/.test(value) ||
+                  REGEXP.snils.test(value) ||
                   value.length < userInfo.snils.length
                 )
-                  return setValue(["userInfo", "snils"], value);
+                  return setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.snils], value);
               }}
             />
           </>
@@ -271,37 +270,37 @@ export const ProfileInfo = (props) => {
       </FormRow>
       <FormRow>
         <Input
-          id="email"
-          label="Электронная почта"
+          id={MAGIC_STRINGS.email}
+          label={LOCALES.email}
           size="lg"
-          error={internalErrors.email}
           disabled={!permissions.editEmail}
           value={userInfo.email}
-          onChange={(value) => setValue(["userInfo", "email"], value)}
+          onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.email], value)}
           onBlur={(value) => {
-            validate("email", value);
+            validate(MAGIC_STRINGS.email, value);
           }}
+          error={internalErrors.email}
         />
         <Input
-          id="phone"
-          error={internalErrors.phone}
+          id={MAGIC_STRINGS.phone}
+          label={LOCALES.phone}
           disabled={!permissions.editPhone}
-          label="Телефон"
           value={userInfo.phone}
-          onChange={(value) => setValue(["userInfo", "phone"], value)}
+          onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.phone], value)}
           onBlur={(value) => {
-            validate("phone", value);
+            validate(MAGIC_STRINGS.phone, value);
           }}
+          error={internalErrors.phone}
           after={
             username === userInfo.username && (
               <Button
-                type="text"
+                type={MAGIC_STRINGS.text}
                 tooltip={
                   phoneVerification
-                    ? "Ваш номер подтверждён"
-                    : "Ваш номер не подтверждён"
+                    ? LOCALES.phoneConfirmed
+                    : LOCALES.phoneNotConfirmed
                 }
-                mode={phoneVerification ? "success" : "error"}
+                mode={phoneVerification ? MAGIC_STRINGS.success : MAGIC_STRINGS.error}
                 onClick={
                   localStor.getSwitchUser()
                     ? () => {}
@@ -309,7 +308,7 @@ export const ProfileInfo = (props) => {
                     ? (e) => e.preventDefault()
                     : (e) => {
                         e.preventDefault();
-                        openModal("verificationPhoneModal");
+                        openModal(MAGIC_STRINGS.verificationPhoneModal);
                       }
                 }
               >
@@ -330,61 +329,61 @@ export const ProfileInfo = (props) => {
               }}
             >
               {whatsApp.notify_enabled
-                ? "Отключить уведомления Whatsapp"
-                : "Подключить уведомления Whatsapp"}
+                ? LOCALES.notifyWhatsappDisable
+                : LOCALES.notifyWhatsappEnable}
             </Button>
           ) : (
             <Button
               inline
               onClick={() =>
-                openModal("whatsAppAuthModal", {
-                  link: whatsApp["redirect_url"],
+                openModal(MAGIC_STRINGS.whatsAppAuthModal, {
+                  link: whatsApp[MAGIC_STRINGS.redirect_url],
                 })
               }
             >
-              Подключить бота Whatsapp
+              {LOCALES.whatsappBotEnable}
             </Button>
           ))}
         <SuggestionsInput
-          id="address"
-          placeholder="Регион, город, улица"
-          name="address"
+          id={MAGIC_STRINGS.address}
+          label={LOCALES.address}
+          placeholder={LOCALES.addressDefault}
+          name={MAGIC_STRINGS.address}
           size="xl"
           value={userInfo.address}
-          label="Адрес"
           list={userInfo.addressList}
-          keyName="text"
-          onBlur={(address) => {
-            validate("addressInProfile", address);
-            removeError("addressInProfile");
-          }}
+          keyName={MAGIC_STRINGS.text}
           onChange={setValue}
+          onBlur={(address) => {
+            validate(MAGIC_STRINGS.addressInProfile, address);
+            removeError(MAGIC_STRINGS.addressInProfile);
+          }}
           error={internalErrors.addressInProfile}
         />
       </FormRow>
       {permissions.editNote && (
         <FormRow>
           <Input
-            id="description"
+            id={MAGIC_STRINGS.description}
+            label={LOCALES.remark}
             rows="3"
             size="stretch"
-            label="Примечание"
             disabled={!permissions.editNote}
             value={userInfo.notes}
-            onChange={(value) => setValue(["userInfo", "notes"], value)}
+            onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.notes], value)}
           />
         </FormRow>
       )}
       {username === userInfo.username && userInfo.workHours && (
         <>
-          Рабочие часы
+          {LOCALES.workHours}
           <FormRow>
             <Range
               step={1}
               min={0}
               max={23}
               values={userInfo.workHours}
-              onChange={(value) => setValue(["userInfo", "workHours"], value)}
+              onChange={(value) => setValue([MAGIC_STRINGS.userInfo, MAGIC_STRINGS.workHours], value)}
             />
           </FormRow>
         </>

@@ -1,6 +1,7 @@
+import { PASSWORD_CHARSET } from "./const";
 
 export const generatePassword = (length = 10) => {
-  const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-=!@#№$;%^:&?*()_+";
+  const charset = PASSWORD_CHARSET;
   let result = "";
 
   for (let i = 0; i < length; i++) {
