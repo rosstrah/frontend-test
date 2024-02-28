@@ -99,6 +99,7 @@ ProfileInfo.propTypes = {
   errorsServer: PropTypes.array,
   userInfo: PropTypes.object.isRequired,
   setValue: PropTypes.func.isRequired,
+  // Добавить остальные props
 };
 
 export default withValidate(validateInput)(ProfileInfo);
