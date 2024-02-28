@@ -1,3 +1,5 @@
+import React, { memo } from "react";
+
 import localStorage from '../../../utils/browser/localStorage';
 import { WarningIcon, SuccessIcon } from '../../../Icons';
 import { Input, SuggestionsInput, FormRow, Button, Range } from '../../../UiComponents';
@@ -140,4 +142,4 @@ export const ContactInfoForm = (props) => {
   );
 };
 
-export default ContactInfoForm;
+export default memo(ContactInfoForm);

@@ -2,7 +2,7 @@
  * Компонент отображения формы ввода личных данных в создании/редактировании агента
  * from: ProfileInfo
  */
-import { React, useEffect } from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 
 import withValidate from "../../utils/injectValidate";

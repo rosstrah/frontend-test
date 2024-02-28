@@ -1,3 +1,5 @@
+import React, { memo } from "react";
+
 import { DicesIcon } from "../../../Icons";
 import {
   Input,
@@ -102,4 +104,4 @@ export const PersonalInfoForm = (props) => {
   );
 };
 
-export default PersonalInfoForm;
+export default memo(PersonalInfoForm);

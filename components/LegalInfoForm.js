@@ -1,3 +1,4 @@
+import React, { memo } from "react";
 import moment from "moment";
 
 import {
@@ -142,4 +143,4 @@ export const LegalInfoForm = (props) => {
   );
 };
 
-export default LegalInfoForm;
+export default memo(LegalInfoForm);
