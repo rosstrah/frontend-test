@@ -21,6 +21,7 @@ import {
   Spinner,
   Range,
 } from "../../UiComponents";
+import { generatePassword } from "./utils";
 
 export const ProfileInfo = (props) => {
   const {
@@ -56,18 +57,6 @@ export const ProfileInfo = (props) => {
         internalErrors.email = elem.message;
       }
     });
-  };
-
-  const generatePassword = () => {
-    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-=!@#№$;%^:&?*()_+";
-    const length = 10;
-    let result = "";
-
-    for (let i = 0; i < length; i++) {
-      result += charset.charAt(Math.floor(Math.random() * charset.length));
-    }
-
-    return result;
   };
 
   if (loading) {
