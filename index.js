@@ -16,7 +16,6 @@ import {
   DateInput,
   SuggestionsInput,
   RadioButtons,
-  Checkbox,
   FormRow,
   Button,
   Spinner,
@@ -36,19 +35,11 @@ export const ProfileInfo = (props) => {
     permissions,
     rejectSet,
     isJuridical,
-    sendForInspection,
-    isManager,
-    sendAgentCard,
-    // surnameSuggestions,
-    // firstNameSuggestions,
-    // patronymicSuggestions,
     phoneVerification,
     username,
     openModal,
     subscribe,
     setSubscribe,
-    // personInputs,
-    // paymentInfo,
     whatsApp,
     whatsAppSetNotifications,
   } = props;
@@ -277,7 +268,6 @@ export const ProfileInfo = (props) => {
               }}
             />
             <Input
-              // placeholder=''
               label="СНИЛС"
               maxLength="11"
               id="snils"
@@ -413,79 +403,6 @@ export const ProfileInfo = (props) => {
           </FormRow>
         </>
       )}
-      {false && props.username === userInfo.username && (
-        <FormRow>
-          <Checkbox
-            id="canPrecalculation"
-            checked={props.canPrecalculation}
-            disabled={!phoneVerification}
-            onChange={() =>
-              props.setCanPrecalculation(!props.canPrecalculation)
-            }
-            withoutLabel
-            big
-          >
-            Разрешить бронирование (доступно только для пользователей c
-            подтверждённым номером телефона)
-          </Checkbox>
-        </FormRow>
-      )}
-      {false && isManager && !newUser && (
-        <FormRow>
-          <Checkbox
-            id="sendTrue"
-            checked={!!sendForInspection.needToSend}
-            onChange={() =>
-              setValue(
-                ["sendForInspection", "needToSend"],
-                !sendForInspection.needToSend
-              )
-            }
-          >
-            Передать данные на ТО
-          </Checkbox>
-          <Input
-            id="sendForInspectionEmail"
-            label="Электронная почта"
-            value={sendForInspection.email}
-            onChange={(e) =>
-              setValue(["sendForInspection", "email"], e.target.value)
-            }
-            onBlur={(e) => {
-              validate("inspectionEmail", e.target.value);
-            }}
-          />
-          <Button
-            inline
-            disabled={
-              sendForInspection.sended === "sending" ||
-              internalErrors["inspectionEmail"]
-            }
-            onClick={(e) => {
-              e.preventDefault();
-              sendAgentCard(userInfo.username, sendForInspection.email);
-            }}
-          >
-            {sendForInspection.sended === "success"
-              ? "Отправлено"
-              : "Отправить"}
-          </Button>
-        </FormRow>
-      )}
-      {/* <SubTitle>Платёжная информация</SubTitle>
-      <p>Карту необходимо указывать "Сбербанк".</p>
-      <p>
-        *если у Вас нет карты "Сбербанк" Вы можете указать карту лица, которому
-        доверяете.
-      </p>
-      <PaymentInfo
-        fields={personInputs}
-        paymentInfo={paymentInfo}
-        isJuridical={isJuridical}
-        setValue={setValue}
-        permissions={permissions}
-        rejectSet={rejectSet}
-      /> */}
       {permissions.editSubscribe && (
         <Subscribe values={subscribe} setValue={setSubscribe} />
       )}
